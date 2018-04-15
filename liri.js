@@ -49,11 +49,11 @@ function myTweets() {
     });
 }
 
-function spotifyThis() {
+function spotifyThis(song) {
     var spotify = new Spotify(keys.spotify);
 
     spotify
-        .search({ type: 'track', query: 'All the Small Things', limit: 1 })
+        .search({ type: 'track', query: song, limit: 1 })
         .then(function(response) { 
             console.log(`Song name: ${response.tracks.items[0].name}`);
             console.log(`Artist: ${response.tracks.items[0].album.artists[0].name}`);
