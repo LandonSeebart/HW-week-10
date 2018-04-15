@@ -1,6 +1,4 @@
 //To do
-//* If no song is provided then your program will default to "The Sign" by Ace of Base
-//* If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
 //* Finish do what it says function
 
 require("dotenv").config();
@@ -76,11 +74,13 @@ function myTweets() {
 //Takes song name, queries Spotify database, returns one search result,
 //and displays key information in the console.
 function spotifyThis(song) {
-    
+    if (song === '') song = 'the+sign';
+    let desiredSong = song;
+
     const spotify = new Spotify(keys.spotify);
 
     spotify
-        .search({ type: 'track', query: song, limit: 1 })
+        .search({ type: 'track', query: desiredSong, limit: 1 })
         .then(function(response) { 
             console.log(
                 `\nSong name: ${response.tracks.items[0].name}
@@ -95,7 +95,12 @@ function spotifyThis(song) {
 }
 
 //Takes a movie name, queries OMDB, and displays key information in the console.
-function movieThis(movieName) {
+function movieThis(movie) {
+    if (movie === '') {
+        movie = 'Mr.+Nobody';
+    }
+    
+    let movieName = movie
 
     const queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
