@@ -42,22 +42,27 @@ function myTweets() {
         if (!error && response.statusCode === 200) {
 
           tweets.forEach(function(element) {
-            console.log(element.text);
+            console.log(`${element.text} created at: ${element.created_at}`);
           });
         
         }
     });
 }
 
-function spotifyThis(songName) {
+function spotifyThis() {
     var spotify = new Spotify(keys.spotify);
-    spotify.search({ type: 'track', query: songName,  limit: 1 }, function(err, data) {
-        if (!error && response.statusCode === 200) {
 
-            console.log(data);
-        
-        }
-    })
+    spotify
+        .search({ type: 'track', query: 'All the Small Things', limit: 1 })
+        .then(function(response) { 
+            console.log(`Song name: ${response.tracks.items[0].name}`);
+            console.log(`Artist: ${response.tracks.items[0].album.artists[0].name}`);
+            console.log(`Album: ${response.tracks.items[0].album.name}`);
+            console.log(`Album link: ${response.tracks.items[0].album.external_urls.spotify}`)
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
 }
 
 function movieThis(movieName) {
