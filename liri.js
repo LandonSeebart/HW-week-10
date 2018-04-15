@@ -6,21 +6,17 @@
 require("dotenv").config();
 
 //===========Variables============
-//User Variables
-const action = process.argv[2];
-let input = ""
-
 //Local imports
-var keys = require("./keys.js");
+const keys = require("./keys.js");
 
 //Node Packages
-var Twitter = require('twitter');
-var Spotify = require('node-spotify-api');
-var request = require('request');
+const Twitter = require('twitter');
+const Spotify = require('node-spotify-api');
+const request = require('request');
 
 //=============Main================
-
-cleanInput(process.argv);
+const action = process.argv[2];
+const input = parseInput(process.argv)
 
 chooseAction(action, input);
 
@@ -29,14 +25,16 @@ chooseAction(action, input);
 //Song and movie titles can contain more than one word so we cannot set input
 // equal to process.argv[3].  This function collects argv[i] greater than 2 and
 //concatenates them into one string that can be called by other functions.
-function cleanInput(nodeArgs){
-    for (var i = 3; i < nodeArgs.length; i++) {
+function parseInput(nodeArgs){
+    let userInput = ''
+    for (let i = 3; i < nodeArgs.length; i++) {
         if (i > 3 && i < nodeArgs.length) {
-            input = input + "+" + nodeArgs[i];
+            userInput = userInput + "+" + nodeArgs[i];
         } else {
-            input += nodeArgs[i];
+            userInput += nodeArgs[i];
         }
     }
+    return userInput
 }
 
 //This application can preform several differenct functions based on a user's input. ChooseAction
@@ -60,9 +58,9 @@ function chooseAction(action, input) {
 //Calls user's twitter API and returns up to 20 most recent tweets
 function myTweets() {
 
-    var client = new Twitter(keys.twitter);
+    const client = new Twitter(keys.twitter);
 
-    var params = {screen_name: 'tacomoose1'};
+    const params = {screen_name: 'tacomoose1'};
 
     client.get('statuses/user_timeline', params, function(error, tweets, response) {
         if (!error && response.statusCode === 200) {
@@ -79,7 +77,7 @@ function myTweets() {
 //and displays key information in the console.
 function spotifyThis(song) {
     
-    var spotify = new Spotify(keys.spotify);
+    const spotify = new Spotify(keys.spotify);
 
     spotify
         .search({ type: 'track', query: song, limit: 1 })
@@ -99,7 +97,7 @@ function spotifyThis(song) {
 //Takes a movie name, queries OMDB, and displays key information in the console.
 function movieThis(movieName) {
 
-    var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+    const queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
     //Create a request to the queryUrl
     request(queryUrl, function(error, response, body){
