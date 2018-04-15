@@ -5,9 +5,12 @@
 
 require("dotenv").config();
 
-//======Variables=========================
+//===========Variables============
+//User Variables
+const action = process.argv[2];
+let input = ""
 
-// Local imports
+//Local imports
 var keys = require("./keys.js");
 
 //Node Packages
@@ -15,16 +18,18 @@ var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require('request');
 
-
 //=============Main================
+
 cleanInput(process.argv);
+
+chooseAction(action, input);
 
 //=============Functions===========
 
+//Song and movie titles can contain more than one word so we cannot set input
+// equal to process.argv[3].  This function collects argv[i] greater than 2 and
+//concatonates them into one string that can be called by other functions.
 function cleanInput(nodeArgs){
-    let input = ""
-    const action = process.argv[2];
-
     for (var i = 3; i < nodeArgs.length; i++) {
         if (i > 3 && i < nodeArgs.length) {
             input = input + "+" + nodeArgs[i];
@@ -32,13 +37,11 @@ function cleanInput(nodeArgs){
             input += nodeArgs[i];
         }
     }
-    chooseAction(action, input);
 }
 
+//This application preforms several functions based on the user's input.
+//chooseAction evaluates that input and triggers the correct function.
 function chooseAction(action, input) {
-    console.log(`action: ${action}`);
-    console.log(`input: ${input}`);
-
     switch (action) {
         case "my-tweets":
           myTweets();
@@ -54,6 +57,7 @@ function chooseAction(action, input) {
         }
 }
 
+//Calls user's twitter API and returns up to 20 most recent tweets
 function myTweets() {
 
     var client = new Twitter(keys.twitter);
@@ -71,6 +75,8 @@ function myTweets() {
     });
 }
 
+//Takes song name, queries Spotify database, returns one search result,
+//and displays key information in the console.
 function spotifyThis(song) {
     
     var spotify = new Spotify(keys.spotify);
@@ -78,16 +84,19 @@ function spotifyThis(song) {
     spotify
         .search({ type: 'track', query: song, limit: 1 })
         .then(function(response) { 
-            console.log(`Song name: ${response.tracks.items[0].name}`);
-            console.log(`Artist: ${response.tracks.items[0].album.artists[0].name}`);
-            console.log(`Album: ${response.tracks.items[0].album.name}`);
-            console.log(`Album link: ${response.tracks.items[0].album.external_urls.spotify}`)
+            console.log(
+                `\nSong name: ${response.tracks.items[0].name}
+                \nArtist: ${response.tracks.items[0].album.artists[0].name}
+                \nAlbum: ${response.tracks.items[0].album.name}
+                \nAlbum link: ${response.tracks.items[0].album.external_urls.spotify}\n`
+            )
         })
         .catch(function(err) {
             console.log(err);
         });
 }
 
+//Takes a movie name, queryies OMDB, and displays key information in the console.
 function movieThis(movieName) {
 
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
@@ -100,14 +109,16 @@ function movieThis(movieName) {
 
             // Then log the following for the movie: Title, Release year, IMDB Rating,
             // Rotten Tomatoes Rating, Country, Language, Plot, and Actors. 
-            console.log(`Title: ${JSON.parse(body).Title}`);
-            console.log(`Release Year: ${JSON.parse(body).Year}`);
-            console.log(`IMDB Rating: ${JSON.parse(body).imdbRating}`);
-            console.log(`Rotten Tomatoes Rating: ${JSON.parse(body).Ratings[2].Value}`);
-            console.log(`Country: ${JSON.parse(body).Country}`);
-            console.log(`Language: ${JSON.parse(body).Language}`);
-            console.log(`Plot: ${JSON.parse(body).Plot}`);
-            console.log(`Actors: ${JSON.parse(body).Actors}`);
+            console.log(
+                `\nTitle: ${JSON.parse(body).Title}
+                \nRelease Year: ${JSON.parse(body).Year}
+                \nIMDB Rating: ${JSON.parse(body).imdbRating}
+                \nRotten Tomatoes Rating: ${JSON.parse(body).Ratings[2].Value}
+                \nCountry: ${JSON.parse(body).Country}
+                \nLanguage: ${JSON.parse(body).Language}
+                \nPlot: ${JSON.parse(body).Plot}
+                \nActors: ${JSON.parse(body).Actors}\n`
+            );
         }
     })
 };
