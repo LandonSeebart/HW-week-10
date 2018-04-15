@@ -1,31 +1,29 @@
 require("dotenv").config();
 
 //======Variables=========================
-// var spotify = new Spotify(keys.spotify);
-// var client = new Twitter(keys.twitter);
 
-//Install necessary Node Pakcages
+// App imports
+var keys = require("./keys.js");
+
+//Node Pakcages
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require('request');
 
-//Define user inputs
+//User inputs
 var action = process.argv[2];
 var input = process.argv[3];
 
 //=============Main================
+
 switch (action) {
-    // case "my-tweets":
-    //   myTweets();
-    //   break;
+    case "my-tweets":
+      myTweets();
+      break;
     
-    // case "spotify-this-song":
-    //   spotifyThis();
-    //   break;
-    
-    // case "withdraw":
-    //   withdraw();
-    //   break;
+    case "spotify-this-song":
+      spotifyThis(input);
+      break;
     
     case "movie-this":
       movieThis(input);
@@ -33,6 +31,34 @@ switch (action) {
     }
 
 //=======================Functions==========================
+
+function myTweets() {
+
+    var client = new Twitter(keys.twitter);
+
+    var params = {screen_name: 'tacomoose1'};
+
+    client.get('statuses/user_timeline', params, function(error, tweets, response) {
+        if (!error && response.statusCode === 200) {
+
+          tweets.forEach(function(element) {
+            console.log(element.text);
+          });
+        
+        }
+    });
+}
+
+function spotifyThis(songName) {
+    var spotify = new Spotify(keys.spotify);
+    spotify.search({ type: 'track', query: songName,  limit: 1 }, function(err, data) {
+        if (!error && response.statusCode === 200) {
+
+            console.log(data);
+        
+        }
+    })
+}
 
 function movieThis(movieName) {
 
