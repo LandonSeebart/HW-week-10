@@ -28,7 +28,7 @@ chooseAction(action, input);
 
 //Song and movie titles can contain more than one word so we cannot set input
 // equal to process.argv[3].  This function collects argv[i] greater than 2 and
-//concatonates them into one string that can be called by other functions.
+//concatenates them into one string that can be called by other functions.
 function cleanInput(nodeArgs){
     for (var i = 3; i < nodeArgs.length; i++) {
         if (i > 3 && i < nodeArgs.length) {
@@ -39,8 +39,8 @@ function cleanInput(nodeArgs){
     }
 }
 
-//This application preforms several functions based on the user's input.
-//chooseAction evaluates that input and triggers the correct function.
+//This application can preform several differenct functions based on a user's input. ChooseAction
+// evaluates that input and then triggers the correct function with the correct argument(s).
 function chooseAction(action, input) {
     switch (action) {
         case "my-tweets":
@@ -96,7 +96,7 @@ function spotifyThis(song) {
         });
 }
 
-//Takes a movie name, queryies OMDB, and displays key information in the console.
+//Takes a movie name, queries OMDB, and displays key information in the console.
 function movieThis(movieName) {
 
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
