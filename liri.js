@@ -1,36 +1,58 @@
+//To do
+//* If no song is provided then your program will default to "The Sign" by Ace of Base
+//* If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
+//* Finish do what it says function
+
 require("dotenv").config();
 
 //======Variables=========================
 
-// App imports
+// Local imports
 var keys = require("./keys.js");
 
-//Node Pakcages
+//Node Packages
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require('request');
 
-//User inputs
-var action = process.argv[2];
-var input = process.argv[3];
 
 //=============Main================
+cleanInput(process.argv);
 
-switch (action) {
-    case "my-tweets":
-      myTweets();
-      break;
-    
-    case "spotify-this-song":
-      spotifyThis(input);
-      break;
-    
-    case "movie-this":
-      movieThis(input);
-      break;
+//=============Functions===========
+
+function cleanInput(nodeArgs){
+    let input = ""
+    const action = process.argv[2];
+
+    for (var i = 3; i < nodeArgs.length; i++) {
+        if (i > 3 && i < nodeArgs.length) {
+            input = input + "+" + nodeArgs[i];
+        } else {
+            input += nodeArgs[i];
+        }
     }
+    chooseAction(action, input);
+}
 
-//=======================Functions==========================
+function chooseAction(action, input) {
+    console.log(`action: ${action}`);
+    console.log(`input: ${input}`);
+
+    switch (action) {
+        case "my-tweets":
+          myTweets();
+          break;
+        
+        case "spotify-this-song":
+          spotifyThis(input);
+          break;
+        
+        case "movie-this":
+          movieThis(input);
+          break;
+        }
+}
 
 function myTweets() {
 
@@ -50,6 +72,7 @@ function myTweets() {
 }
 
 function spotifyThis(song) {
+    
     var spotify = new Spotify(keys.spotify);
 
     spotify
