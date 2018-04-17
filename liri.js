@@ -12,6 +12,10 @@ const Twitter = require('twitter');
 const Spotify = require('node-spotify-api');
 const request = require('request');
 
+//Configuration settings
+movieDefault = 'Mr.+Nobody'
+songDefault = 'The+sign'
+
 //=============Main================
 const action = process.argv[2];
 const input = parseInput(process.argv)
@@ -24,18 +28,10 @@ chooseAction(action, input);
 // equal to process.argv[3].  This function collects argv[i] greater than 2 and
 //concatenates them into one string that can be called by other functions.
 function parseInput(nodeArgs){
-    let userInput = ''
-    for (let i = 3; i < nodeArgs.length; i++) {
-        if (i > 3 && i < nodeArgs.length) {
-            userInput = userInput + "+" + nodeArgs[i];
-        } else {
-            userInput += nodeArgs[i];
-        }
-    }
-    return userInput
+    return nodeArgs.splice(3).join('+')
 }
 
-//This application can preform several differenct functions based on a user's input. ChooseAction
+//This application can preform several different functions based on a user's input. ChooseAction
 // evaluates that input and then triggers the correct function with the correct argument(s).
 function chooseAction(action, input) {
     switch (action) {
@@ -74,19 +70,20 @@ function myTweets() {
 //Takes song name, queries Spotify database, returns one search result,
 //and displays key information in the console.
 function spotifyThis(song) {
-    if (song === '') song = 'the+sign';
-    let desiredSong = song;
+    let songQuery = song;
+    
+    //Search for a default song name if user runs command without providing an input
+    if (songQuery === '') songQuery = songDefault;
 
     const spotify = new Spotify(keys.spotify);
 
     spotify
-        .search({ type: 'track', query: desiredSong, limit: 1 })
+        .search({ type: 'track', query: songQuery, limit: 1 })
         .then(function(response) { 
-            console.log(
-                `\nSong name: ${response.tracks.items[0].name}
-                \nArtist: ${response.tracks.items[0].album.artists[0].name}
-                \nAlbum: ${response.tracks.items[0].album.name}
-                \nAlbum link: ${response.tracks.items[0].album.external_urls.spotify}\n`
+            console.log(`\nSong name: ${response.tracks.items[0].name}\n
+                Artist: ${response.tracks.items[0].album.artists[0].name}\n
+                Album: ${response.tracks.items[0].album.name}\n
+                Album link: ${response.tracks.items[0].album.external_urls.spotify}\n`
             )
         })
         .catch(function(err) {
@@ -96,13 +93,13 @@ function spotifyThis(song) {
 
 //Takes a movie name, queries OMDB, and displays key information in the console.
 function movieThis(movie) {
-    if (movie === '') {
-        movie = 'Mr.+Nobody';
-    }
-    
-    let movieName = movie
 
-    const queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+    let movieQuery = movie;
+
+    //Search for a default movie if user runs command without providing an input
+    if (movieQuery === '') movieQuery = movieDefault;
+
+    const queryUrl = "http://www.omdbapi.com/?t=" + movieQuery + "&y=&plot=short&apikey=trilogy";
 
     //Create a request to the queryUrl
     request(queryUrl, function(error, response, body){
@@ -112,15 +109,14 @@ function movieThis(movie) {
 
             // Then log the following for the movie: Title, Release year, IMDB Rating,
             // Rotten Tomatoes Rating, Country, Language, Plot, and Actors. 
-            console.log(
-                `\nTitle: ${JSON.parse(body).Title}
-                \nRelease Year: ${JSON.parse(body).Year}
-                \nIMDB Rating: ${JSON.parse(body).imdbRating}
-                \nRotten Tomatoes Rating: ${JSON.parse(body).Ratings[2].Value}
-                \nCountry: ${JSON.parse(body).Country}
-                \nLanguage: ${JSON.parse(body).Language}
-                \nPlot: ${JSON.parse(body).Plot}
-                \nActors: ${JSON.parse(body).Actors}\n`
+            console.log(`Title: ${JSON.parse(body).Title}
+                Release Year: ${JSON.parse(body).Year}
+                IMDB Rating: ${JSON.parse(body).imdbRating}\n
+                Rotten Tomatoes Rating: ${JSON.parse(body).Ratings[2].Value}\n
+                Country: ${JSON.parse(body).Country}\n
+                Language: ${JSON.parse(body).Language}\n
+                Plot: ${JSON.parse(body).Plot}\n
+                Actors: ${JSON.parse(body).Actors}\n`
             );
         }
     })
