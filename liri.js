@@ -133,6 +133,8 @@ function doWhatItSays(){
           return console.log(error);
         }
 
+        //Data from random.txt is formated as action,input so we just need 
+        //to split at the comma to get the arguments necessary to run choosAction
         const dataArr = data.split(",");
         const randomAction = dataArr[0];
         const randomInput = dataArr[1];
