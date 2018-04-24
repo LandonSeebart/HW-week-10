@@ -14,14 +14,13 @@ const Spotify = require('node-spotify-api');
 const request = require('request');
 const fs = require('file-system');
 
-
 //Configuration settings
 movieDefault = 'Mr.+Nobody'
 songDefault = 'The+sign'
 
 //=============Main================
 const action = process.argv[2];
-const input = parseInput(process.argv)
+const input = parseInput(process.argv);
 
 chooseAction(action, input);
 
@@ -32,7 +31,7 @@ chooseAction(action, input);
 //concatenates them into one string that can be called by other functions.
 function parseInput(nodeArgs){
     return nodeArgs.splice(3).join('+')
-}
+};
 
 //This application can preform several different functions based on a user's input. ChooseAction
 // evaluates that input and then triggers the correct function with the correct argument(s).
@@ -49,8 +48,12 @@ function chooseAction(action, input) {
         case "movie-this":
           movieThis(input);
           break;
-        }
-}
+        
+        case "do-what-it-says":
+          doWhatItSays();
+        break;
+        } 
+};
 
 //Calls user's twitter API and returns up to 20 most recent tweets
 function myTweets() {
@@ -68,7 +71,7 @@ function myTweets() {
         
         }
     });
-}
+};
 
 //Takes song name, queries Spotify database, returns one search result,
 //and displays key information in the console.
@@ -123,5 +126,19 @@ function movieThis(movie) {
     })
 };
 
-// `do-what-it-says`
-// Import text from random.txt, split at comma and assign to action and input - run case statement
+function doWhatItSays(){
+    fs.readFile("random.txt", "utf8", function(error, data) {
+
+        if (error) {
+          return console.log(error);
+        }
+
+        const dataArr = data.split(",");
+        const randomAction = dataArr[0];
+        const randomInput = dataArr[1];
+
+        chooseAction(randomAction, randomInput)
+    });
+}
+
+  
