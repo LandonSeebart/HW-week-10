@@ -6,11 +6,14 @@ require("dotenv").config();
 //===========Variables============
 //Local imports
 const keys = require("./keys.js");
+// const random = require('./random.txt')
 
 //Node Packages
 const Twitter = require('twitter');
 const Spotify = require('node-spotify-api');
 const request = require('request');
+const fs = require('file-system');
+
 
 //Configuration settings
 movieDefault = 'Mr.+Nobody'
@@ -25,7 +28,7 @@ chooseAction(action, input);
 //=============Functions===========
 
 //Song and movie titles can contain more than one word so we cannot set input
-// equal to process.argv[3].  This function collects argv[i] greater than 2 and
+//equal to process.argv[3].  This function collects argv[i] greater than 2 and
 //concatenates them into one string that can be called by other functions.
 function parseInput(nodeArgs){
     return nodeArgs.splice(3).join('+')
@@ -80,11 +83,10 @@ function spotifyThis(song) {
     spotify
         .search({ type: 'track', query: songQuery, limit: 1 })
         .then(function(response) { 
-            console.log(`\nSong name: ${response.tracks.items[0].name}\n
-                Artist: ${response.tracks.items[0].album.artists[0].name}\n
-                Album: ${response.tracks.items[0].album.name}\n
-                Album link: ${response.tracks.items[0].album.external_urls.spotify}\n`
-            )
+            console.log("\nSong name: " + response.tracks.items[0].name +
+            "\nArtist: " + response.tracks.items[0].album.artists[0].name +
+            "\nAlbum: " + response.tracks.items[0].album.name +
+            "\nAlbum link: " + response.tracks.items[0].album.external_urls.spotify + "\n")
         })
         .catch(function(err) {
             console.log(err);
@@ -109,17 +111,17 @@ function movieThis(movie) {
 
             // Then log the following for the movie: Title, Release year, IMDB Rating,
             // Rotten Tomatoes Rating, Country, Language, Plot, and Actors. 
-            console.log(`Title: ${JSON.parse(body).Title}
-                Release Year: ${JSON.parse(body).Year}
-                IMDB Rating: ${JSON.parse(body).imdbRating}\n
-                Rotten Tomatoes Rating: ${JSON.parse(body).Ratings[2].Value}\n
-                Country: ${JSON.parse(body).Country}\n
-                Language: ${JSON.parse(body).Language}\n
-                Plot: ${JSON.parse(body).Plot}\n
-                Actors: ${JSON.parse(body).Actors}\n`
-            );
+            console.log("\nTitle: " + JSON.parse(body).Title + 
+            "\nRelease Year: " + JSON.parse(body).Year +
+            "\nIMDB Rating: " + JSON.parse(body).imdbRating +
+            "\nRotten Tomatoes Rating: " + JSON.parse(body).Ratings[2].Value +
+            "\nCountry: " + JSON.parse(body).Country +
+            "\nLanguage: " + JSON.parse(body).Language +
+            "\nPlot: " + JSON.parse(body).Plot +
+            "\nActors: " + JSON.parse(body).Actors + "\n")
         }
     })
 };
 
 // `do-what-it-says`
+// Import text from random.txt, split at comma and assign to action and input - run case statement
