@@ -30,7 +30,7 @@ chooseAction(action, input);
 //equal to process.argv[3].  This function collects argv[i] greater than 2 and
 //concatenates them into one string that can be called by other functions.
 function parseInput(nodeArgs){
-    return nodeArgs.splice(3).join('+')
+    return nodeArgs.slice(3).join('+')
 };
 
 //This application can preform several different functions based on a user's input. ChooseAction
